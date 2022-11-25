@@ -46,3 +46,4 @@ workdir/*
 /fuzzer.h
 /dist/
 /main.*.go
+/.idea

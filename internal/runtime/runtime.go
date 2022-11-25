@@ -302,6 +302,7 @@ func New(lines <-chan *logline.LogLine, wg *sync.WaitGroup, programPath string, 
 
 	// auto load config
 	r.wg.Add(1)
+	auto_load_config_quit := make(chan int, 1)
 	go func() {
 		defer r.wg.Done()
 		<-initDone
@@ -313,6 +314,7 @@ func New(lines <-chan *logline.LogLine, wg *sync.WaitGroup, programPath string, 
 		if err != nil {
 			glog.Info(err)
 		}
+
 		defer watcher.Close()
 		err = watcher.Add(r.programPath)
 		if err != nil {
@@ -321,6 +323,8 @@ func New(lines <-chan *logline.LogLine, wg *sync.WaitGroup, programPath string, 
 		}
 		for {
 			select {
+			case <-auto_load_config_quit:
+				return
 			case event, ok := <-watcher.Events:
 				if !ok {
 					return
@@ -342,6 +346,9 @@ func New(lines <-chan *logline.LogLine, wg *sync.WaitGroup, programPath string, 
 	r.wg.Add(1)
 	go func() {
 		defer r.wg.Done()
+		defer func() {
+			auto_load_config_quit <- 1
+		}()
 		<-initDone
 		if r.programPath == "" {
 			glog.Info("no program reload on SIGHUP without programPath")
