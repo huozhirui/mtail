@@ -301,10 +301,8 @@ func New(lines <-chan *logline.LogLine, wg *sync.WaitGroup, programPath string, 
 	}
 
 	// auto load config
-	r.wg.Add(1)
 	auto_load_config_quit := make(chan int, 1)
 	go func() {
-		defer r.wg.Done()
 		<-initDone
 		if r.programPath == "" {
 			glog.Info("no program reload on SIGHUP without programPath")
