@@ -25,6 +25,7 @@ import (
 type seqStringFlag []string
 
 func (f *seqStringFlag) String() string {
+
 	return fmt.Sprint(*f)
 }
 
@@ -167,8 +168,8 @@ func main() {
 	}()
 
 	opts := []mtail.Option{
-		mtail.ProgramPath(*progs),
-		mtail.LogPathPatterns(logs...),
+		mtail.ProgramPath(*progs),      // 配置列表
+		mtail.LogPathPatterns(logs...), // 日志配置原始路径
 		mtail.IgnoreRegexPattern(*ignoreRegexPattern),
 		mtail.SetBuildInfo(buildInfo),
 		mtail.OverrideLocation(loc),

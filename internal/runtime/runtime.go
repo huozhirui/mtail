@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"expvar"
+	"github.com/fsnotify/fsnotify"
 	"io"
 	"io/ioutil"
 	"os"
@@ -298,6 +299,44 @@ func New(lines <-chan *logline.LogLine, wg *sync.WaitGroup, programPath string, 
 		glog.Info("No program path specified, no programs will be loaded.")
 		return r, nil
 	}
+
+	// auto load config
+	r.wg.Add(1)
+	go func() {
+		defer r.wg.Done()
+		<-initDone
+		if r.programPath == "" {
+			glog.Info("no program reload on SIGHUP without programPath")
+			return
+		}
+		watcher, err := fsnotify.NewWatcher()
+		if err != nil {
+			glog.Info(err)
+		}
+		defer watcher.Close()
+		err = watcher.Add(r.programPath)
+		if err != nil {
+			glog.Info(err)
+			return
+		}
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				}
+				glog.Infof("config dir:%s,event:%s", r.programPath, event)
+				// load config
+				if err := r.LoadAllPrograms(); err != nil {
+					glog.Info(err)
+				}
+			case _, ok := <-watcher.Errors:
+				if !ok {
+					return
+				}
+			}
+		}
+	}()
 
 	// Create one goroutine that handles reload signals.
 	r.wg.Add(1)

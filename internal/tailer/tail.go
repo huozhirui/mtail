@@ -360,11 +360,21 @@ func (t *Tailer) StartLogPatternPollLoop(waker waker.Waker) {
 func (t *Tailer) PollLogPatterns() error {
 	t.globPatternsMu.RLock()
 	defer t.globPatternsMu.RUnlock()
+	var matches []string
+	var err error
 	for pattern := range t.globPatterns {
-		matches, err := filepath.Glob(pattern)
-		if err != nil {
-			return err
+
+		// 先去匹配日志格式
+		matches = myParseLogPath(pattern)
+
+		if matches == nil {
+			// 正则匹配文件
+			matches, err = filepath.Glob(pattern)
+			if err != nil {
+				return err
+			}
 		}
+
 		glog.V(1).Infof("glob matches: %v", matches)
 		for _, pathname := range matches {
 			if t.Ignore(pathname) {
