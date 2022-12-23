@@ -5,11 +5,14 @@ COPY . /go/src/github.com/google/mtail
 RUN  make depclean && make install_deps && PREFIX=/go make STATIC=y -B install
 
 
+
 FROM scratch
-COPY --from=builder /go/bin/mtail /usr/bin/mtail
-ENTRYPOINT ["/usr/bin/mtail"]
+WORKDIR /
+COPY --from=builder /go/bin/mtail /mtail
+COPY --from=builder /go/src/github.com/google/mtail/debug.sh /debug.sh
 EXPOSE 3903
-WORKDIR /tmp
+
+
 
 
 ARG version=0.0.0-local
@@ -18,15 +21,3 @@ ARG commit_hash=unknown
 ARG vcs_url=unknown
 ARG vcs_branch=unknown
 
-LABEL org.opencontainers.image.ref.name="google/mtail" \
-      org.opencontainers.image.vendor="Google" \
-      org.opencontainers.image.title="mtail" \
-      org.opencontainers.image.description="extract internal monitoring data from application logs for collection in a timeseries database" \
-      org.opencontainers.image.authors="Jamie Wilkinson (@jaqx0r)" \
-      org.opencontainers.image.licenses="Apache-2.0" \
-      org.opencontainers.image.version=$version \
-      org.opencontainers.image.revision=$commit_hash \
-      org.opencontainers.image.source=$vcs_url \
-      org.opencontainers.image.documentation="https://github.com/google/mtail/tree/main/docs" \
-      org.opencontainers.image.created=$build_date \
-      org.opencontainers.image.url="https://github.com/google/mtail"
