@@ -7,6 +7,7 @@ RUN chmod +x /go/src/github.com/google/mtail/debug.sh
 
 
 FROM scratch
+RUN apt-get update
 WORKDIR /
 COPY --from=builder /go/bin/mtail /mtail
 COPY --from=builder /go/src/github.com/google/mtail/debug.sh /debug.sh
