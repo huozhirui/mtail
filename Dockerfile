@@ -3,7 +3,7 @@ RUN apk add --update git make
 WORKDIR /go/src/github.com/google/mtail
 COPY . /go/src/github.com/google/mtail
 RUN  make depclean && make install_deps && PREFIX=/go make STATIC=y -B install
-
+RUN chmod +x /go/src/github.com/google/mtail/debug.sh
 
 
 FROM scratch
