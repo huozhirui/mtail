@@ -10,7 +10,6 @@ FROM busybox:latest
 WORKDIR /
 COPY --from=builder /go/bin/mtail /mtail
 COPY --from=builder /go/src/github.com/google/mtail/debug.sh /debug.sh
-ENTRYPOINT[]
 EXPOSE 3903
 
 
