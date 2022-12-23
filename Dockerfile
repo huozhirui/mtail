@@ -6,11 +6,11 @@ RUN  make depclean && make install_deps && PREFIX=/go make STATIC=y -B install
 RUN chmod +x /go/src/github.com/google/mtail/debug.sh
 
 
-FROM scratch
-RUN apt-get update
+FROM busybox:latest
 WORKDIR /
 COPY --from=builder /go/bin/mtail /mtail
 COPY --from=builder /go/src/github.com/google/mtail/debug.sh /debug.sh
+ENTRYPOINT[]
 EXPOSE 3903
 
 
