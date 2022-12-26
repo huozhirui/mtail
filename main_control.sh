@@ -4,7 +4,7 @@ echo "start mtail">/dev/stdout
 
 
 MAIIL_PRO_DIR=/progs           # servce log path
-PORT=8987                       # port
+PORT=3903                       # port
 POLL_LOG_INTERVAL=15s           # poll_log_interval
 
 
