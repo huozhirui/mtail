@@ -17,13 +17,3 @@ RUN chmod +x /debug.sh
 RUN mkdir /progs
 RUN mkdir /service_log
 EXPOSE 3903
-
-
-
-
-ARG version=0.0.0-local
-ARG build_date=unknown
-ARG commit_hash=unknown
-ARG vcs_url=unknown
-ARG vcs_branch=unknown
-
