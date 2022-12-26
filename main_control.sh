@@ -23,12 +23,12 @@ do
     ps -ef | grep -v grep | grep -q mtail
     if [ $? -eq 1 ] &&  [ ${LOGPATH} != "''" ]  ; then
         /mtail --logs=$LOGPATH -progs $MAIIL_PRO_DIR -port=$PORT -poll_log_interval=$POLL_LOG_INTERVAL -logtostderr &
-        echo `date "+%Y-%m-%d %H:%M:%S"`' mtail start to run'>/dev/stdout
+        echo `date "+%Y-%m-%d %H:%M:%S"`' mtail start to run,path:${LOGPATH}'>/dev/stdout
     fi
 
     # check  log path
     if [[ ${LOGPATH} == "''" ]]; then
-        echo `date "+%Y-%m-%d %H:%M:%S"` " no mtail config path">/dev/stdout
+        echo `date "+%Y-%m-%d %H:%M:%S"` " no mtail config path:${LOGPATH}">/dev/stdout
     fi
 
     sleep 1m
