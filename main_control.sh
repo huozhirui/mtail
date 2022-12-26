@@ -1,5 +1,5 @@
 #/bin/sh
-set -x
+#set -x
 echo "start mtail">/dev/stdout
 
 
