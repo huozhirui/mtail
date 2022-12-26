@@ -15,7 +15,6 @@ RUN chmod +x /main_control.sh
 RUN chmod +x /debug.sh
 RUN mkdir /progs
 RUN mkdir /service_log
-ENTRYPOINT ["/main_control.sh"]
 EXPOSE 3903
 
 
