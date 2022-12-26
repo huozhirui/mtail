@@ -15,5 +15,4 @@ COPY --from=builder /go/src/github.com/google/mtail/main_control.sh /main_contro
 RUN chmod +x /main_control.sh
 RUN chmod +x /debug.sh
 RUN mkdir /progs
-RUN mkdir /service_log
 EXPOSE 3903
