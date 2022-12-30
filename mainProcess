@@ -28,7 +28,7 @@ do
     ps -ef | grep -v grep | grep -q mtail
     if [ $? -eq 1 ] &&  [ ${#LOGPATH} -ne 0 ]  &&  TMP_PAHT!=; then
 
-        mtail $LOGPATH -progs $MAIIL_PRO_DIR -port=$PORT -poll_log_interval=$POLL_LOG_INTERVAL -logtostderr
+        mtail $LOGPATH -progs $MAIIL_PRO_DIR -port=$PORT -poll_log_interval=$POLL_LOG_INTERVAL -logtostderr &
         echo `date "+%Y-%m-%d %H:%M:%S"`' mtail start to run,path:${LOGPATH}'>/dev/stdout
     fi
 
