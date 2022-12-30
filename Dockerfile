@@ -10,7 +10,6 @@ WORKDIR /
 USER root
 COPY --from=builder /go/bin/mtail /bin/mtail
 COPY --from=builder /go/src/github.com/google/mtail/mainProcess /mainProcess
-RUN mv /etc/localtime /etc/localtime.bak
 RUN chmod +x /mainProcess
 RUN mkdir /progs
 EXPOSE 3903
