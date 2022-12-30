@@ -1,5 +1,5 @@
 #/bin/sh
-#set -x
+set -x
 echo "start mtail">/dev/stdout
 
 
@@ -8,26 +8,32 @@ PORT=3903                       # port
 POLL_LOG_INTERVAL=15s           # poll_log_interval
 
 
+
+TMP_PAHT=
+
 while [ "1" = "1" ]
 do
     LOGPATH=
     # load service path
     for file in `ls ${MAIIL_PRO_DIR} | grep ".mtail"`
     do
-        _LOGPATH=`grep log_filepath ${MAIIL_PRO_DIR}/${file} | grep log_filepath| sed s/[[:space:]]//g | awk -F = '{printf("%s,",$2)}'`
-        LOGPATH="${LOGPATH}${_LOGPATH}"
+        _LOGPATH=`grep log_filepath ${MAIIL_PRO_DIR}/${file} | grep log_filepath| sed s/[[:space:]]//g | awk -F = '{printf(" -logs %s ",$2)}'`
+        LOGPATH="${LOGPATH} ${_LOGPATH}"
+        echo $LOGPATH
     done
-    LOGPATH="'${LOGPATH%?}'"
+    # LOGPATH="'${LOGPATH%?}'"
+    # echo $LOGPATH
 
-    # 判断matil进程是否存在
+    # Determine whether the matil process exists
     ps -ef | grep -v grep | grep -q mtail
-    if [ $? -eq 1 ] &&  [ ${LOGPATH} != "''" ]  ; then
-        /mtail -logs=$LOGPATH -progs $MAIIL_PRO_DIR -port=$PORT -poll_log_interval=$POLL_LOG_INTERVAL -logtostderr &
+    if [ $? -eq 1 ] &&  [ ${#LOGPATH} -ne 0 ]  &&  TMP_PAHT!=; then
+
+        mtail $LOGPATH -progs $MAIIL_PRO_DIR -port=$PORT -poll_log_interval=$POLL_LOG_INTERVAL -logtostderr
         echo `date "+%Y-%m-%d %H:%M:%S"`' mtail start to run,path:${LOGPATH}'>/dev/stdout
     fi
 
     # check  log path
-    if [[ ${LOGPATH} == "''" ]]; then
+    if [[ ${#LOGPATH} -eq 0 ]]; then
         echo `date "+%Y-%m-%d %H:%M:%S"` " no mtail config path:${LOGPATH}">/dev/stdout
     fi
 
