@@ -12,4 +12,5 @@ COPY --from=builder /go/bin/mtail /bin/mtail
 COPY --from=builder /go/src/github.com/google/mtail/mainProcess /mainProcess
 RUN chmod +x /mainProcess
 RUN mkdir /progs
+CMD ["/bin/sh","/mainProcess"]
 EXPOSE 3903
