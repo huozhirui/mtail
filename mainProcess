@@ -6,36 +6,53 @@ echo "start mtail">/dev/stdout
 MAIIL_PRO_DIR=/progs           # servce log path
 PORT=3903                       # port
 POLL_LOG_INTERVAL=15s           # poll_log_interval
+BEFORE_LOG_PAHT=" "
+
+
+start(){
+    mtail $LOGPATH -progs $MAIIL_PRO_DIR  -port=$PORT -poll_log_interval=$POLL_LOG_INTERVAL -logtostderr &
+}
 
 
 
-TMP_PAHT=
-
-while [ "1" = "1" ]
-do
+load_log_path(){
+    # load service log path
     LOGPATH=
-    # load service path
     for file in `ls ${MAIIL_PRO_DIR} | grep ".mtail"`
     do
         _LOGPATH=`grep log_filepath ${MAIIL_PRO_DIR}/${file} | grep log_filepath| sed s/[[:space:]]//g | awk -F = '{printf(" -logs %s ",$2)}'`
         LOGPATH="${LOGPATH} ${_LOGPATH}"
-        echo $LOGPATH
     done
-    # LOGPATH="'${LOGPATH%?}'"
-    # echo $LOGPATH
+}
 
-    # Determine whether the matil process exists
-    ps -ef | grep -v grep | grep -q mtail
-    if [ $? -eq 1 ] &&  [ ${#LOGPATH} -ne 0 ]  &&  TMP_PAHT!=; then
 
-        mtail $LOGPATH -progs $MAIIL_PRO_DIR -port=$PORT -poll_log_interval=$POLL_LOG_INTERVAL -logtostderr &
-        echo `date "+%Y-%m-%d %H:%M:%S"`' mtail start to run,path:${LOGPATH}'>/dev/stdout
+while [ "1" = "1" ]
+do
+    load_log_path
+
+    # 配置变更
+    if [ ${#LOGPATH} -gt 2 ] && [ "${BEFORE_LOG_PAHT}" != "${LOGPATH}" ]
+    then
+        echo "reload config"
+        pkill mtail
+        start
+        BEFORE_LOG_PAHT=${LOGPATH}
+        sleep 10s
     fi
 
-    # check  log path
-    if [[ ${#LOGPATH} -eq 0 ]]; then
-        echo `date "+%Y-%m-%d %H:%M:%S"` " no mtail config path:${LOGPATH}">/dev/stdout
+    # 检查当logpath不为空时，进程是否活着
+    pid=$(ps aux | grep mtail | grep -v grep | awk '{print $1}')
+    if [ "$pid" == "" ] && [ ${#LOGPATH} -ne 0 ]
+    then
+        echo "restart matil"
+        start
     fi
 
+    # 监控被删除时
+    if [ ${#LOGPATH} -eq 1 ] && [ "${#BEFORE_LOG_PAHT}" -ne 0 ] && [ "$pid" != "" ]
+    then
+            echo "kill mtail "
+            kill -9 $pid
+    fi
     sleep 1m
 done
