@@ -25,7 +25,7 @@ func myParseLogPath(pattern string) []string {
 	cstZone, err := time.LoadLocation(zone)
 	if err != nil {
 		glog.V(2).Infof("%s.", err)
-		zone := "Asia/Shanghai"
+		zone = "Asia/Shanghai"
 		cstZone, _ = time.LoadLocation(zone)
 	}
 	if strings.HasSuffix(pattern, ".yyyymmddhh") {
