@@ -12,6 +12,7 @@ USER root
 COPY --from=builder /go/bin/mtail /bin/mtail
 COPY --from=builder /go/src/github.com/google/mtail/mainProcess /mainProcess
 COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai
+COPY --from=builder /usr/share/zoneinfo/UTC /usr/share/zoneinfo/UTC
 RUN chmod +x /mainProcess
 RUN mkdir /progs
 CMD ["/bin/sh","/mainProcess"]
