@@ -1,5 +1,5 @@
-#/bin/sh
-set -x
+#/bin/ash
+# set -x
 echo "start mtail">/dev/stdout
 
 

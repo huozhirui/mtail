@@ -15,5 +15,5 @@ COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/S
 COPY --from=builder /usr/share/zoneinfo/UTC /usr/share/zoneinfo/UTC
 RUN chmod +x /mainProcess
 RUN mkdir /progs
-CMD ["/bin/bash","/mainProcess"]
+CMD ["/bin/ash","/mainProcess"]
 EXPOSE 3903
