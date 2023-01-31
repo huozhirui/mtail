@@ -1,6 +1,6 @@
 #/bin/ash
 # set -x
-echo "start mtail">/dev/stdout
+echo `date "+%Y-%m-%d %H:%M:%S"` " start mtail">/dev/stdout
 
 
 MAIIL_PRO_DIR=/progs           # servce log path
@@ -33,7 +33,7 @@ do
     # configuration changes
     if [ ${#LOGPATH} -gt 2 ] && [ "${BEFORE_LOG_PAHT}" != "${LOGPATH}" ]
     then
-        echo "reload config"
+        echo `date "+%Y-%m-%d %H:%M:%S"` " reload config"
         pkill mtail
         start
         BEFORE_LOG_PAHT=${LOGPATH}
@@ -44,14 +44,14 @@ do
     pid=$(ps aux | grep mtail | grep -v grep | awk '{print $1}')
     if [ "$pid" == "" ] && [ ${#LOGPATH} -ne 0 ]
     then
-        echo "restart matil"
+        echo `date "+%Y-%m-%d %H:%M:%S"` " restart matil"
         start
     fi
 
     # When monitoring is deleted
     if [ ${#LOGPATH} -eq 1 ] && [ "${#BEFORE_LOG_PAHT}" -ne 0 ] && [ "$pid" != "" ]
     then
-            echo "kill mtail "
+            echo `date "+%Y-%m-%d %H:%M:%S"` " kill mtail "
             kill -9 $pid
     fi
     sleep 1m
