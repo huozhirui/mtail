@@ -30,7 +30,7 @@ while [ "1" = "1" ]
 do
     load_log_path
 
-    # 配置变更
+    # configuration changes
     if [ ${#LOGPATH} -gt 2 ] && [ "${BEFORE_LOG_PAHT}" != "${LOGPATH}" ]
     then
         echo "reload config"
@@ -40,7 +40,7 @@ do
         sleep 10s
     fi
 
-    # 检查当logpath不为空时，进程是否活着
+    # Check if process is alive when logpath is not empty
     pid=$(ps aux | grep mtail | grep -v grep | awk '{print $1}')
     if [ "$pid" == "" ] && [ ${#LOGPATH} -ne 0 ]
     then
@@ -48,7 +48,7 @@ do
         start
     fi
 
-    # 监控被删除时
+    # When monitoring is deleted
     if [ ${#LOGPATH} -eq 1 ] && [ "${#BEFORE_LOG_PAHT}" -ne 0 ] && [ "$pid" != "" ]
     then
             echo "kill mtail "
