@@ -52,9 +52,9 @@ do
 
     if [ "$pid" == "" ]
     then
-        echo `date "+%Y-%m-%d %H:%M:%S"` " agent is running..."
-    else
         echo `date "+%Y-%m-%d %H:%M:%S"` " agent is dead..."
+    else
+        echo `date "+%Y-%m-%d %H:%M:%S"` " agent is running..."
     fi
 
     # When monitoring is deleted
