@@ -1,6 +1,6 @@
 #/bin/ash
 # set -x
-echo `date "+%Y-%m-%d %H:%M:%S"` " start mtail">/dev/stdout
+echo `date "+%Y-%m-%d %H:%M:%S"` " start agent">/dev/stdout
 
 
 MAIIL_PRO_DIR=/progs           # servce log path
@@ -23,6 +23,7 @@ load_log_path(){
         _LOGPATH=`grep log_filepath ${MAIIL_PRO_DIR}/${file} | grep log_filepath| sed s/[[:space:]]//g | awk -F = '{printf(" -logs %s ",$2)}'`
         LOGPATH="${LOGPATH} ${_LOGPATH}"
     done
+    echo `date "+%Y-%m-%d %H:%M:%S"` " LOGPATH="$LOGPATH
 }
 
 
@@ -33,7 +34,7 @@ do
     # configuration changes
     if [ ${#LOGPATH} -gt 2 ] && [ "${BEFORE_LOG_PAHT}" != "${LOGPATH}" ]
     then
-        echo `date "+%Y-%m-%d %H:%M:%S"` " reload config"
+        echo `date "+%Y-%m-%d %H:%M:%S"` " reload agent config"
         pkill mtail
         start
         BEFORE_LOG_PAHT=${LOGPATH}
@@ -45,14 +46,21 @@ do
     pid=$(ps aux | grep mtail | grep -v grep | awk '{print $1}')
     if [ "$pid" == "" ] && [ ${#LOGPATH} -ne 0 ]
     then
-        echo `date "+%Y-%m-%d %H:%M:%S"` " restart matil"
+        echo `date "+%Y-%m-%d %H:%M:%S"` " restart agent"
         start
+    fi
+
+    if [ "$pid" == "" ]
+    then
+        echo `date "+%Y-%m-%d %H:%M:%S"` " agent is running..."
+    else
+        echo `date "+%Y-%m-%d %H:%M:%S"` " agent is dead..."
     fi
 
     # When monitoring is deleted
     if [ ${#LOGPATH} -eq 1 ] && [ "${#BEFORE_LOG_PAHT}" -ne 0 ] && [ "$pid" != "" ]
     then
-            echo `date "+%Y-%m-%d %H:%M:%S"` " kill mtail "
+            echo `date "+%Y-%m-%d %H:%M:%S"` " kill agent "
             kill -9 $pid
     fi
     sleep 1m
